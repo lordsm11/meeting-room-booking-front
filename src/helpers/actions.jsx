@@ -1,4 +1,4 @@
-import store from "../redux/store";
+import store from "reducers/store";
 import { SubmissionError } from 'redux-form'
 import productHelper from './productHelper';
 

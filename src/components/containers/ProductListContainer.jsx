@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import ProductList from './../presentational/product/ProductList';
+import ProductList from 'components/product/ProductList';
 import React from 'react';
 
 class ProductListContainer extends React.Component {

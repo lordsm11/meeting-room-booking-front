@@ -1,4 +1,4 @@
-import footHelper from '../../helpers/footHelper';
+/*import footHelper from 'helpers/footHelper';
 
 const initState = {matchs: []};
 
@@ -16,4 +16,4 @@ export default (state = initState, action) => {
             return state;
     }
 };
-
+*/

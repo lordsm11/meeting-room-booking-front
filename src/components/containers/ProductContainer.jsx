@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Product from './../presentational/product/Product';
+import Product from 'components/product/Product';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 

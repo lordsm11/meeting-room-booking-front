@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Menu } from 'semantic-ui-react'
 
-import About from "./presentational/common/about";
-import Home from "./presentational/common/home";
-import Rooms from "./presentational/Rooms";
-import Bookings from "./presentational/Bookings";
+import About from "components/common/about";
+import Home from "components/common/home";
+import Rooms from "components/Rooms";
+import Bookings from "components/Bookings";
+import Book from "components/Book";
 import 'semantic-ui-css/semantic.min.css';
 
 class App extends Component {
@@ -21,6 +22,7 @@ class App extends Component {
                                 <Menu stackable>
                                     <Menu.Item as={ Link } name='home' to='/home'>Home</Menu.Item>
                                     <Menu.Item as={ Link } name='rooms' to='/rooms'>Rooms</Menu.Item>
+                                    <Menu.Item as={ Link } name='book' to='/book'>Book</Menu.Item>
                                     <Menu.Item as={ Link } name='about' to='/about'>About</Menu.Item>
                                 </Menu>
                             </div>
@@ -30,6 +32,7 @@ class App extends Component {
                         <Route exact path='/home' component={Home}/>
                         <Route exact path='/rooms' component={Rooms}/>
                         <Route exact path="/rooms/:roomId/bookings" component={Bookings}/>
+                        <Route exact path="/book" component={Book}/>
                         <Route exact path="/about" component={About}/>
                         <Route component={Home}/>
                     </Switch>

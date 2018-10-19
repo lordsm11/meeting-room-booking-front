@@ -1,19 +1,18 @@
 import React, {Component} from 'react';
-import apiCallService from '../../helpers/apiCallService';
+import webservices from 'helpers/webservices';
 import {Label, Table} from 'semantic-ui-react';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import Moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import timeHelper from 'helpers/timeHelper';
 
 class Bookings extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            bookingDate: moment()
+            bookingDate: timeHelper.getMoment()
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -23,17 +22,17 @@ class Bookings extends Component {
         const roomId = this.props.match.params.roomId;
         const bookingDate = this.state.bookingDate;
 
-        apiCallService.getRoomDetails(roomId)
+        webservices.getRoomDetails(roomId)
                 .then(function (response) {
                     self.setState({...self.state, room: response.data});
                 });
 
-        apiCallService.findBookingsByRoomId(roomId)
+        webservices.findBookingsByRoomId(roomId)
                 .then(function (response) {
                     self.setState({...self.state, allBookings: response.data, bookings: response.data});
                 });
 
-        apiCallService.findAvailableIntervals(roomId, bookingDate)
+        webservices.findAvailableIntervals(roomId, bookingDate)
                 .then(function (response) {
                     self.setState({...self.state, availableBookings: response.data});
                 });
@@ -110,11 +109,8 @@ class Bookings extends Component {
     }
 
     render() {
-
-
         return (
                 <div>
-
                      <h3>Room Details</h3>
                     {this.renderRoomDetails()}
 
@@ -122,7 +118,7 @@ class Bookings extends Component {
                     <DatePicker
                             selected={this.state.bookingDate}
                             onChange={this.handleChange}
-                            dateFormat="DD/MM/YYYY"
+                            dateFormat={timeHelper.DATE_FORMAT}
                     />
 
                     <h3>List of meetings</h3>
@@ -137,8 +133,8 @@ class Bookings extends Component {
     handleChange(bookingDate) {
         const self = this;
         const roomId = this.props.match.params.roomId;
-        const bookingDateStr = Moment(bookingDate).format('DD/MM/YYYY');
-        apiCallService.findAvailableIntervals(roomId, bookingDateStr)
+        const bookingDateStr = timeHelper.momentToString(bookingDate);
+        webservices.findAvailableIntervals(roomId, bookingDateStr)
                 .then(function (response) {
                     self.setState({
                         bookingDate: bookingDate,
