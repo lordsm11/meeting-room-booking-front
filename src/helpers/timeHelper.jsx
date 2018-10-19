@@ -8,12 +8,12 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 function createIntervals(start, end) {
     let intervals = [];
     for (let compteur = start; compteur < end; compteur++) {
-        intervals.push({key: compteur, text: this.createTimeFromCode(compteur), value: compteur });
+        intervals.push({key: compteur, text: this.formatTime(compteur), value: compteur });
     }
     return intervals;
 }
 
-function createTimeFromCode(code) {
+function formatTime(code) {
 
     const hours = Math.floor(code/4);
     const minutes = (code % 4) * 15;
@@ -37,7 +37,7 @@ export default {
     LAST_INTERVAL_TIME,
     DATE_FORMAT,
     createIntervals,
-    createTimeFromCode,
+    formatTime,
     momentToString,
     getMoment
 }

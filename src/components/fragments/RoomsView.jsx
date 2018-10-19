@@ -3,8 +3,6 @@ import { Table } from 'semantic-ui-react'
 import RoomView from 'components/fragments/RoomView'
 
 import 'semantic-ui-css/semantic.min.css';
-import 'react-datepicker/dist/react-datepicker.css';
-import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 class RoomsView extends Component {
 
@@ -16,7 +14,7 @@ class RoomsView extends Component {
             return (<h3>Aucune salle disponible</h3>);
         }
 
-        const roomsView = rooms.map((room, id) => (<Table.Row key={id}><RoomView id={id} room={room} data={data} handleBook={handleBook}></RoomView></Table.Row>));
+        const roomsView = rooms.map((room, id) => (<Table.Row key={id}><RoomView room={room} data={data} handleBook={handleBook}></RoomView></Table.Row>));
 
         return (
                 <div>

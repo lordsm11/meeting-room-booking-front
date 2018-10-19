@@ -6,9 +6,10 @@ import { Menu } from 'semantic-ui-react'
 import About from "components/common/about";
 import Home from "components/common/home";
 import Rooms from "components/Rooms";
-import Bookings from "components/Bookings";
+import RoomBookings from "components/RoomBookings";
 import Book from "components/Book";
 import 'semantic-ui-css/semantic.min.css';
+import LoginForm from 'components/LoginForm';
 
 class App extends Component {
 
@@ -31,9 +32,10 @@ class App extends Component {
                     <Switch>
                         <Route exact path='/home' component={Home}/>
                         <Route exact path='/rooms' component={Rooms}/>
-                        <Route exact path="/rooms/:roomId/bookings" component={Bookings}/>
+                        <Route exact path="/rooms/:roomId/bookings" component={RoomBookings}/>
                         <Route exact path="/book" component={Book}/>
                         <Route exact path="/about" component={About}/>
+                        <Route exact path="/login" component={LoginForm}/>
                         <Route component={Home}/>
                     </Switch>
                 </div>

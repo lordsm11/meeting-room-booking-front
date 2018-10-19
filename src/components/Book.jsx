@@ -9,43 +9,77 @@ import 'semantic-ui-css/semantic.min.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import RoomsView from 'components/fragments/RoomsView';
+import MessageView from 'components/fragments/MessageView';
+
 
 class Book extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            bookingDate: timeHelper.getMoment()
-        };
-    }
 
     componentWillMount() {
         this.setState({
             intervalsFrom: timeHelper.createIntervals(timeHelper.FIRST_INTERVAL_TIME,timeHelper.LAST_INTERVAL_TIME), 
             intervalsTo: timeHelper.createIntervals(timeHelper.FIRST_INTERVAL_TIME+1,timeHelper.LAST_INTERVAL_TIME+1),
+            bookingDate: timeHelper.getMoment()
         });
     }
 
-    handleBookingDateChange= (bookingDate) => this.setState({bookingDate});
-    handleIntervalFromChange = (event, data) => 
-        this.setState({'fromTime':data.value, intervalsTo: timeHelper.createIntervals(data.value+1,timeHelper.LAST_INTERVAL_TIME+1)});
-
-    handleIntervalToChange = (event, data) => this.setState({'toTime':data.value});
-    handleChange = (event) => this.setState({[event.target.name]:event.target.value});
-    
-    handleSubmit= (event) => {
-        event.preventDefault();
-        webservices.findAvailableRooms(timeHelper.momentToString(this.state.bookingDate), this.state.fromTime, this.state.toTime, this.state.nbPersons)
-            .then((response) => this.setState({rooms: response.data}));
+    handleBookingDateChange= (bookingDate) => {
+        this.setState({bookingDate});
     }
 
-    handleBook= (event, bookingDate, fromTime, toTime, nbPersons, roomId) => {
+    handleIntervalFromChange = (event, data) =>  { 
+        this.setState({'fromTime':data.value, intervalsTo: timeHelper.createIntervals(data.value+1,timeHelper.LAST_INTERVAL_TIME+1)});
+    }
+
+    handleIntervalToChange = (event, data) => {
+        this.setState({'toTime':data.value});
+    }
+    
+    handleNbPersonsChange = (event) => { 
+        this.setState({'nbPersons':event.target.value});
+    }
+    
+    handleSearch= (event) => {
+        event.preventDefault();
+        webservices.findAvailableRooms(timeHelper.momentToString(this.state.bookingDate), this.state.fromTime, this.state.toTime, this.state.nbPersons)
+            .then((response) => this.setState({rooms: response.data, validBooking:undefined, errorBooking:undefined, messageValidBooking:undefined}));
+    }
+
+    handleBook= (event, bookingDate, fromTime, toTime, nbPersons, roomId, roomName) => {
         event.preventDefault();
         webservices.bookRoom(bookingDate, fromTime,toTime,nbPersons, roomId)
-            .then((response) =>     
-                webservices.findAvailableRooms(timeHelper.momentToString(this.state.bookingDate), this.state.fromTime, this.state.toTime, this.state.nbPersons)
-                    .then((response) => this.setState({rooms: response.data}))
-            );
+            .then((response) => { 
+                if(response.status === 204) {
+                    const messageValidBooking = "Salle " + roomName + " réservée le " 
+                        + bookingDate + " de " 
+                        + timeHelper.formatTime(fromTime) + " à " + timeHelper.formatTime(toTime) 
+                        + " pour " + nbPersons + " personnes";
+
+                    this.setState({validBooking: true, messageValidBooking});
+                    webservices.findAvailableRooms(timeHelper.momentToString(this.state.bookingDate), this.state.fromTime, this.state.toTime, this.state.nbPersons)
+                        .then((response) => this.setState({rooms: response.data}))
+                } else {
+                    this.setState({errorBooking: true});
+                }
+            });
+    }
+
+    renderSuccessMessage(content) {
+        return (
+           <MessageView 
+                header="La salle a été réservée avec succés" 
+                content={content}>
+            </MessageView>
+        );
+    }
+
+    renderErrorMessage() {
+        return (
+            <MessageView 
+                error="true" 
+                header="La salle n'a pas été réservée" 
+                content="Une erreur est survenue">
+            </MessageView>
+        );
     }
 
     render() {
@@ -56,9 +90,17 @@ class Book extends Component {
             nbPersons:this.state.nbPersons
         };
         const enabled = this.state.bookingDate && this.state.fromTime && this.state.toTime && this.state.nbPersons;
+
+        let blocResult;
+        if(this.state.errorBooking) {
+            blocResult = this.renderErrorMessage();
+        } else if(this.state.validBooking) {
+            blocResult = this.renderSuccessMessage(this.state.messageValidBooking);
+        }
+
         return (
             <div>
-                <Form onSubmit={this.handleSubmit}>
+                <Form onSubmit={this.handleSearch}>
                     <Form.Group widths='equal'>
                     <Form.Field>
                         <label>Date de la réunion</label>
@@ -74,11 +116,12 @@ class Book extends Component {
                     </Form.Field>
                     <Form.Field>
                         <label>Nombre de personnes</label>
-                        <input name="nbPersons" onChange={this.handleChange} />
+                        <input name="nbPersons" onChange={this.handleNbPersonsChange} />
                     </Form.Field>
                     <Button disabled={!enabled} type='submit'>Rechercher une salle</Button>
                     </Form.Group>
                 </Form>
+                {blocResult}
                 <RoomsView rooms={this.state.rooms} data={data} handleBook={this.handleBook}></RoomsView> 
             </div>
         );
