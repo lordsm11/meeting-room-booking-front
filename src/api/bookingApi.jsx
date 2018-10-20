@@ -10,8 +10,12 @@ function getRoomDetails(roomId) {
     return axios.get(serviceUrl+'rooms/'+roomId);
 }
 
+function findBookings(email) {
+    return axios.get(serviceUrl+'bookings/users/'+email);
+}
+
 function findBookingsByRoomId(roomId) {
-    return axios.get(serviceUrl+'rooms/'+roomId+'/bookings');
+    return axios.get(serviceUrl+'bookings/rooms/'+roomId);
 }
 
 function findAvailableIntervals(roomId, bookingDate) {
@@ -20,13 +24,16 @@ function findAvailableIntervals(roomId, bookingDate) {
 
 function findAvailableRooms(bookingDate, fromTime, toTime, nbPersons) {
     const params = {bookingDate, fromTime, toTime, nbPersons};
-    return axios.get(serviceUrl+'availableRooms', { params });
+    return axios.get(serviceUrl+'rooms/available', { params });
 }
 
-
-function bookRoom(bookingDate, fromTime, toTime, nbPersons, roomId) {
-    const params = {bookingDate, fromTime, toTime, nbPersons, roomId};
+function bookRoom(bookingDate, fromTime, toTime, nbPersons, roomId, email) {
+    const params = {bookingDate, fromTime, toTime, nbPersons, roomId, email};
     return axios.post(serviceUrl+'book', params);
+}
+
+function deleteBooking(bookingId) {
+    return axios.delete(serviceUrl+'bookings/'+bookingId);
 }
 
 export default {
@@ -35,5 +42,7 @@ export default {
     findBookingsByRoomId,
     findAvailableIntervals,
     findAvailableRooms,
-    bookRoom
+    bookRoom,
+    findBookings,
+    deleteBooking
 }

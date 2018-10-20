@@ -5,7 +5,7 @@ import registerServiceWorker from './registerServiceWorker';
 import store from 'reducers/store';
 import App from 'components/App';
 
-import LanguageProvider from './components/containers/LanguageProvider';
+import LanguageProvider from 'components/containers/LanguageProvider';
 import { translationMessages } from './i18n';
 
 render(

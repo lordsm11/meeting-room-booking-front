@@ -7,19 +7,18 @@ import { Message } from 'semantic-ui-react'
 class MessageView extends Component {
 
     render () {
-        const header = this.props.header;
         const content = this.props.content;
         if(this.props.error) {
             return (
                 <Message negative>
-                    <Message.Header>{header}</Message.Header>
+                    <Message.Header>Une erreur est survenue!</Message.Header>
                     <p>{content}</p>
                 </Message>
             );
         } else {
             return (
                 <Message success>
-                    <Message.Header>{header}</Message.Header>
+                    <Message.Header>Action réussite!</Message.Header>
                     <p>{content}</p>
                 </Message>
             );

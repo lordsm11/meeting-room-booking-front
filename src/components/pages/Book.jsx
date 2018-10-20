@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import webservices from 'helpers/webservices';
+import { connect } from 'react-redux';
+import bookingApi from 'api/bookingApi';
 import timeHelper from 'helpers/timeHelper';
 import { Button, Form, Select } from 'semantic-ui-react'
 
@@ -11,6 +12,7 @@ import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import RoomsView from 'components/fragments/RoomsView';
 import MessageView from 'components/fragments/MessageView';
 
+import stringUtils from 'helpers/stringUtils';
 
 class Book extends Component {
 
@@ -40,22 +42,18 @@ class Book extends Component {
     
     handleSearch= (event) => {
         event.preventDefault();
-        webservices.findAvailableRooms(timeHelper.momentToString(this.state.bookingDate), this.state.fromTime, this.state.toTime, this.state.nbPersons)
+        bookingApi.findAvailableRooms(timeHelper.momentToString(this.state.bookingDate), this.state.fromTime, this.state.toTime, this.state.nbPersons)
             .then((response) => this.setState({rooms: response.data, validBooking:undefined, errorBooking:undefined, messageValidBooking:undefined}));
     }
 
     handleBook= (event, bookingDate, fromTime, toTime, nbPersons, roomId, roomName) => {
         event.preventDefault();
-        webservices.bookRoom(bookingDate, fromTime,toTime,nbPersons, roomId)
+        bookingApi.bookRoom(bookingDate, fromTime,toTime,nbPersons, roomId, this.props.email)
             .then((response) => { 
                 if(response.status === 204) {
-                    const messageValidBooking = "Salle " + roomName + " réservée le " 
-                        + bookingDate + " de " 
-                        + timeHelper.formatTime(fromTime) + " à " + timeHelper.formatTime(toTime) 
-                        + " pour " + nbPersons + " personnes";
-
+                    const messageValidBooking = stringUtils.formatBookSuccessMessage(roomName, bookingDate, fromTime, toTime, nbPersons);
                     this.setState({validBooking: true, messageValidBooking});
-                    webservices.findAvailableRooms(timeHelper.momentToString(this.state.bookingDate), this.state.fromTime, this.state.toTime, this.state.nbPersons)
+                    bookingApi.findAvailableRooms(timeHelper.momentToString(this.state.bookingDate), this.state.fromTime, this.state.toTime, this.state.nbPersons)
                         .then((response) => this.setState({rooms: response.data}))
                 } else {
                     this.setState({errorBooking: true});
@@ -66,7 +64,6 @@ class Book extends Component {
     renderSuccessMessage(content) {
         return (
            <MessageView 
-                header="La salle a été réservée avec succés" 
                 content={content}>
             </MessageView>
         );
@@ -76,7 +73,6 @@ class Book extends Component {
         return (
             <MessageView 
                 error="true" 
-                header="La salle n'a pas été réservée" 
                 content="Une erreur est survenue">
             </MessageView>
         );
@@ -128,4 +124,16 @@ class Book extends Component {
     }
 }
 
-export default Book;
+const mapStateToProps = (store) => {
+    return {
+        connected: store.loginReducer.connected,
+        email: store.loginReducer.email
+    };
+  };
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Book);

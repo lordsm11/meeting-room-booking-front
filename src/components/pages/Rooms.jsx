@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import webservices from 'helpers/webservices';
+import bookingApi from 'api/bookingApi';
 
 import 'semantic-ui-css/semantic.min.css';
 
@@ -12,10 +12,10 @@ class Rooms extends Component {
         this.setState({
             bookingDate: timeHelper.getMoment()
         });
-        webservices.getRooms()
-                .then((response) => {
-                    this.setState({rooms: response.data});
-                });
+        bookingApi.getRooms()
+        .then((response) => {
+            this.setState({rooms: response.data});
+        });
     }
 
     render () {

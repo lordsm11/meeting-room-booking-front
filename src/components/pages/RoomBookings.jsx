@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import webservices from 'helpers/webservices';
+import bookingApi from 'api/bookingApi';
 import {Label} from 'semantic-ui-react';
 import DatePicker from 'react-datepicker';
 
@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 import timeHelper from 'helpers/timeHelper';
+import stringUtils from 'helpers/stringUtils';
 
 class RoomBookings extends Component {
 
@@ -18,20 +19,20 @@ class RoomBookings extends Component {
             bookingDate 
         });
 
-        webservices.getRoomDetails(roomId)
-                .then((response) => {
-                    this.setState({room: response.data});
-                });
+        bookingApi.getRoomDetails(roomId)
+        .then((response) => {
+            this.setState({room: response.data});
+        });
 
-        webservices.findBookingsByRoomId(roomId)
-                .then((response) => {
-                    this.setState({allBookings: response.data, bookings: response.data});
-                });
+        bookingApi.findBookingsByRoomId(roomId)
+        .then((response) => {
+            this.setState({allBookings: response.data, bookings: response.data});
+        });
 
-        webservices.findAvailableIntervals(roomId, bookingDate)
-                .then((response) => {
-                    this.setState({availableBookings: response.data});
-                });
+        bookingApi.findAvailableIntervals(roomId, bookingDate)
+        .then((response) => {
+            this.setState({availableBookings: response.data});
+        });
     }
 
     renderRoomDetails () {
@@ -62,7 +63,7 @@ class RoomBookings extends Component {
             meetingsView = <li>Aucune réservation</li>;
         } else {
             meetingsView = bookings.map((booking, id) => (
-                <li key={id}>De {timeHelper.formatTime(booking.fromTime)} A {timeHelper.formatTime(booking.toTime)} pour {booking.nbPersons} personnes</li>
+                <li key={id}>{stringUtils.formatRoomBooking(booking)}</li>
             ));
         }
  
@@ -102,7 +103,7 @@ class RoomBookings extends Component {
     handleChangeDate = (bookingDate) => {
         const roomId = this.props.match.params.roomId;
         const bookingDateStr = timeHelper.momentToString(bookingDate);
-        webservices.findAvailableIntervals(roomId, bookingDateStr)
+        bookingApi.findAvailableIntervals(roomId, bookingDateStr)
                 .then((response) => {
                     this.setState({
                         bookingDate: bookingDate,
