@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const serviceUrl = "http://localhost:9123/booking-service/";
+const serviceUrl = "http://devakt.ddns.net:9124/booking-service/";
 
 function getRooms() {
     return axios.get(serviceUrl+'rooms');
