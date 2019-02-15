@@ -1,20 +1,8 @@
-# base image
-FROM node:9.6.1
+FROM nginx:1.14
 
-# set working directory
-RUN mkdir /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir /usr/share/nginx/html/booking-front
+COPY build /usr/share/nginx/html/booking-front
 
-# add `/usr/src/app/node_modules/.bin` to $PATH
-ENV PATH /usr/src/app/node_modules/.bin:$PATH
+RUN sed -i 's+/usr/share/nginx/html+/usr/share/nginx/html/booking-front+g' /etc/nginx/conf.d/default.conf
 
-# install and cache app dependencies
-COPY package.json /usr/src/app
-COPY package-lock.json /usr/src/app
-RUN npm install --silent
-RUN npm install react-scripts@1.1.1 -g --silent
-
-COPY . /usr/src/app
-
-# start app
-CMD ["npm", "start"]
+EXPOSE 80
