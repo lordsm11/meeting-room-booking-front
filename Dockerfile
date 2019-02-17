@@ -1,8 +1,8 @@
 FROM nginx:1.14
 
-RUN mkdir /usr/share/nginx/html/booking-front
-COPY build /usr/share/nginx/html/booking-front
+COPY build /usr/share/nginx/html
 
-RUN sed -i 's+/usr/share/nginx/html+/usr/share/nginx/html/booking-front+g' /etc/nginx/conf.d/default.conf
+RUN rm /etc/nginx/conf.d/default.conf
+COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
 
 EXPOSE 80

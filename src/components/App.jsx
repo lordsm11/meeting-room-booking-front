@@ -18,7 +18,7 @@ class App extends Component {
 
     render() {
         return (
-            <BrowserRouter>
+            <BrowserRouter basename='/booking-front'>
                 <div>
                     <nav className="navbar navbar-default">
                         <div className="container-fluid">
