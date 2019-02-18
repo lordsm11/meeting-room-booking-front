@@ -1,8 +1,27 @@
 {
-    "test": "/\\.js?$/",
-    "exclude": "/(node_modules|bower_components)/",
-    "loader": "babel", // 'babel-loader' is also a legal name to reference
-    "query": {
-      "presets": ["es2015", "react"]
-    }
+  "presets": [
+    "@babel/env",
+    "@babel/react"
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    "@babel/plugin-proposal-function-sent",
+    "@babel/plugin-proposal-export-namespace-from",
+    "@babel/plugin-proposal-numeric-separator",
+    "@babel/plugin-proposal-throw-expressions",
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-syntax-import-meta",
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": false
+      }
+    ],
+    "@babel/plugin-proposal-json-strings"
+  ]
 }
